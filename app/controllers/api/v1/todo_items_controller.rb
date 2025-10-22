@@ -4,6 +4,7 @@ class Api::V1::TodoItemsController < ApplicationController
     end
   
     def show
+      @todo_item = TodoItem.find(params[:id])
     end
   
     def create
