@@ -10,9 +10,13 @@ class Api::V1::TodoItemsController < ApplicationController
     end
   
     def show
-      @todo_item = TodoItem.find(params[:id])
+      if authorized?
+        respond_to { |format| format.json { render :show } }
+      else
+        handle_unauthorized
+      end
     end
-  
+
     def create
     end
   
