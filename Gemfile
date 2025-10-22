@@ -64,3 +64,4 @@ end
 
 gem 'webpacker', '~> 5.4'
 gem 'devise', '~> 4.7', '>= 4.7.1'
+gem 'dotenv-rails', groups: [:development, :test]
