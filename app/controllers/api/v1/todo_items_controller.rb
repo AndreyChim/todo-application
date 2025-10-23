@@ -17,9 +17,6 @@ class Api::V1::TodoItemsController < ApplicationController
       end
     end
 
-   # app/controllers/api/v1/todo_items_controller.rb
-
-
     def create
       @todo_item = current_user.todo_items.build(todo_item_params)
   
