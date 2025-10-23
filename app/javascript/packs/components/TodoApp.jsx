@@ -1,5 +1,5 @@
 import React from "react";
-import ReactDOM from "react-dom";
+import { createRoot } from "react-dom/client";
 
 class TodoApp extends React.Component {
   render() {
@@ -9,5 +9,8 @@ class TodoApp extends React.Component {
 
 document.addEventListener("turbolinks:load", () => {
   const app = document.getElementById("todo-app");
-  app && ReactDOM.render(<TodoApp />, app);
+  if (app) {
+    const root = createRoot(app);
+    root.render(<TodoApp />);
+  }
 });
