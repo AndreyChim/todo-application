@@ -43,6 +43,12 @@ class Api::V1::TodoItemsController < ApplicationController
     end
   
     def destroy
+        if authorized?
+          @todo_item.destroy
+          respond_to { |format| format.json { head :no_content } }
+        else
+          handle_unauthorized
+        end
     end
   
     private
