@@ -36,7 +36,5 @@ try {
   // const imagePath = (name) => images(name, true)
   
   require("./components/TodoApp");
-  require("./components/TodoItems");
-  require("./components/TodoItem");
   require("bootstrap");
   import "bootstrap/dist/css/bootstrap.css";

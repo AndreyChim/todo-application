@@ -7,23 +7,8 @@ class TodoItem extends React.Component {
     this.state = {
       complete: this.props.todoItem.complete,
     };
-    
-    // Bind event handlers
-    this.handleCompleteChange = this.handleCompleteChange.bind(this);
-    this.handleDelete = this.handleDelete.bind(this);
-  }
-
-  handleCompleteChange(event) {
-    this.setState({ complete: event.target.checked });
-    // If you have a callback from parent to update the todo, you would call it here
-    // this.props.onCompleteChange(this.props.todoItem.id, event.target.checked);
-  }
-
-  handleDelete() {
-    // If you have a callback from parent to handle deletion, you would call it here
-    // this.props.onDelete(this.props.todoItem.id);
-  }
-
+  }  
+   
   render() {
     const { todoItem } = this.props;
     return (
@@ -88,11 +73,8 @@ class TodoItem extends React.Component {
   }
 }
 
+export default TodoItem;
+
 TodoItem.propTypes = {
   todoItem: PropTypes.object.isRequired,
-  // You might want to add these later:
-  // onCompleteChange: PropTypes.func,
-  // onDelete: PropTypes.func,
 };
-
-export default TodoItem;
