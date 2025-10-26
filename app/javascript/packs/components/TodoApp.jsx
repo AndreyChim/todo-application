@@ -3,49 +3,75 @@ import { createRoot } from "react-dom/client";
 import axios from "axios";
 import TodoItems from "./TodoItems";
 import TodoItem from "./TodoItem";
+import TodoForm from "./TodoForm";
 
 class TodoApp extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
       todoItems: [],
+      error: null
     };
     this.getTodoItems = this.getTodoItems.bind(this);
-      }
+    this.createTodoItem = this.createTodoItem.bind(this);
+  }
 
-      componentDidMount() {
-        this.getTodoItems();
-      }
+  createTodoItem(todoItem) {
+    const todoItems = [todoItem, ...this.state.todoItems];
+    this.setState({ todoItems });
+  }
 
-      getTodoItems() {
-        axios
-          .get("/api/v1/todo_items")
-          .then((response) => {
-            const todoItems = response.data;
-            this.setState({ todoItems });
-          })
-          .catch((error) => {
-            console.log(error);
-          });
-      }
-    
+  componentDidMount() {
+    this.getTodoItems();
+  }
+
+  getTodoItems() {
+    axios
+      .get("/api/v1/todo_items")
+      .then((response) => {
+        const todoItems = response.data;
+        this.setState({ todoItems, error: null });
+      })
+      .catch((error) => {
+        console.log(error);
+        this.setState({ error: "Failed to load todo items" });
+      });
+  }
+
   render() {
+    const { todoItems, error } = this.state;
+    
     return (
-      <TodoItems>
-        {this.state.todoItems.map((todoItem) => (
-          <TodoItem key={todoItem.id} todoItem={todoItem} />
-        ))}
-      </TodoItems>
+      <div>
+        <TodoForm createTodoItem={this.createTodoItem} />
+        {error && <div className="error">{error}</div>}
+        <TodoItems>
+          {todoItems.map((todoItem) => (
+            <TodoItem key={todoItem.id} todoItem={todoItem} />
+          ))}
+        </TodoItems>
+      </div>
     );
   }
-  }
+}
 
-
+// Turbolinks handling
+let root = null;
 
 document.addEventListener("turbolinks:load", () => {
   const app = document.getElementById("todo-app");
   if (app) {
-    const root = createRoot(app);
+    if (root) {
+      root.unmount();
+    }
+    root = createRoot(app);
     root.render(<TodoApp />);
+  }
+});
+
+document.addEventListener("turbolinks:before-render", () => {
+  if (root) {
+    root.unmount();
+    root = null;
   }
 });
