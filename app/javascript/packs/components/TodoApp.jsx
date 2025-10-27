@@ -47,7 +47,10 @@ class TodoApp extends React.Component {
         {error && <div className="error">{error}</div>}
         <TodoItems>
           {todoItems.map((todoItem) => (
-            <TodoItem key={todoItem.id} todoItem={todoItem} />
+            <TodoItem key={todoItem.id}
+             todoItem={todoItem}
+             getTodoItems={this.getTodoItems}
+             />
           ))}
         </TodoItems>
       </div>
