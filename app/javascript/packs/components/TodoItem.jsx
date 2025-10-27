@@ -6,11 +6,38 @@ import setAxiosHeaders from "./AxiosHeaders";
 class TodoItem extends React.Component {
   constructor(props) {
     super(props);
+
+    this.handleChange = this.handleChange.bind(this);
+    this.updateTodoItem = this.updateTodoItem.bind(this);
+    this.handleDestroy = this.handleDestroy.bind(this);
+
+    this.inputRef = React.createRef();
+    this.completedRef = React.createRef();
+
     this.state = {
       complete: this.props.todoItem.complete,
     };
-  this.handleDestroy = this.handleDestroy.bind(this);
-  this.path = `/api/v1/todo_items/${this.props.todoItem.id}`;  
+    this.path = `/api/v1/todo_items/${this.props.todoItem.id}`;  
+  }
+
+  handleChange() {
+    this.updateTodoItem();
+  }
+  
+  updateTodoItem() {
+    this.setState({ complete: this.completedRef.current.checked });
+    setAxiosHeaders();
+    axios
+      .put(this.path, {
+        todo_item: {
+          title: this.inputRef.current.value,
+          complete: this.completedRef.current.checked,
+        },
+      })
+      .then((response) => {})
+      .catch((error) => {
+        console.log(error);
+      });
   }
   
   handleDestroy() {
@@ -60,6 +87,8 @@ class TodoItem extends React.Component {
             type="text"
             defaultValue={todoItem.title}
             disabled={this.state.complete}
+            onChange={this.handleChange}
+            ref={this.inputRef}
             className="form-control"
             id={`todoItem__title-${todoItem.id}`}
           />
@@ -69,7 +98,8 @@ class TodoItem extends React.Component {
             <input
               type="checkbox"
               checked={this.state.complete}
-              onChange={this.handleCompleteChange}
+              onChange={this.handleChange}
+              ref={this.completedRef}
               className="form-check-input"
               id={`complete-${todoItem.id}`}
             />
