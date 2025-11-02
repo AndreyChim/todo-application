@@ -10,10 +10,18 @@ class TodoApp extends React.Component {
     super(props);
     this.state = {
       todoItems: [],
+      hideCompletedTodoItems: false,
       error: null
     };
     this.getTodoItems = this.getTodoItems.bind(this);
     this.createTodoItem = this.createTodoItem.bind(this);
+    this.toggleCompletedTodoItems = this.toggleCompletedTodoItems.bind(this);
+  }
+
+  toggleCompletedTodoItems() {
+    this.setState({
+      hideCompletedTodoItems: !this.state.hideCompletedTodoItems,
+    });
   }
 
   createTodoItem(todoItem) {
@@ -39,18 +47,28 @@ class TodoApp extends React.Component {
   }
 
   render() {
-    const { todoItems, error } = this.state;
+    const { todoItems, error, hideCompletedTodoItems } = this.state;
+    
+    // Filter todo items based on hideCompletedTodoItems state
+    const filteredTodoItems = hideCompletedTodoItems 
+      ? todoItems.filter(item => !item.completed)
+      : todoItems;
     
     return (
       <div>
         <TodoForm createTodoItem={this.createTodoItem} />
         {error && <div className="error">{error}</div>}
-        <TodoItems>
-          {todoItems.map((todoItem) => (
-            <TodoItem key={todoItem.id}
-             todoItem={todoItem}
-             getTodoItems={this.getTodoItems}
-             />
+        <TodoItems 
+          toggleCompletedTodoItems={this.toggleCompletedTodoItems}
+          hideCompletedTodoItems={hideCompletedTodoItems}
+        >
+          {filteredTodoItems.map((todoItem) => (
+            <TodoItem 
+              key={todoItem.id}
+              todoItem={todoItem}
+              getTodoItems={this.getTodoItems}
+              hideCompletedTodoItems={hideCompletedTodoItems}
+            />
           ))}
         </TodoItems>
       </div>
