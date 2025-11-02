@@ -4,6 +4,7 @@ import axios from "axios";
 import TodoItems from "./TodoItems";
 import TodoItem from "./TodoItem";
 import TodoForm from "./TodoForm";
+import Spinner from "./Spinner";
 
 class TodoApp extends React.Component {
   constructor(props) {
@@ -11,6 +12,7 @@ class TodoApp extends React.Component {
     this.state = {
       todoItems: [],
       hideCompletedTodoItems: false,
+      isLoading: true,
       error: null
     };
     this.getTodoItems = this.getTodoItems.bind(this);
@@ -34,20 +36,29 @@ class TodoApp extends React.Component {
   }
 
   getTodoItems() {
+    this.setState({ isLoading: true });
+    
     axios
       .get("/api/v1/todo_items")
       .then((response) => {
         const todoItems = response.data;
-        this.setState({ todoItems, error: null });
+        this.setState({ 
+          todoItems, 
+          isLoading: false,
+          error: null 
+        });
       })
       .catch((error) => {
         console.log(error);
-        this.setState({ error: "Failed to load todo items" });
+        this.setState({ 
+          isLoading: false, 
+          error: "Failed to load todo items" 
+        });
       });
   }
 
   render() {
-    const { todoItems, error, hideCompletedTodoItems } = this.state;
+    const { todoItems, error, hideCompletedTodoItems, isLoading } = this.state;
     
     // Filter todo items based on hideCompletedTodoItems state
     const filteredTodoItems = hideCompletedTodoItems 
@@ -55,23 +66,29 @@ class TodoApp extends React.Component {
       : todoItems;
     
     return (
-      <div>
-        <TodoForm createTodoItem={this.createTodoItem} />
-        {error && <div className="error">{error}</div>}
-        <TodoItems 
-          toggleCompletedTodoItems={this.toggleCompletedTodoItems}
-          hideCompletedTodoItems={hideCompletedTodoItems}
-        >
-          {filteredTodoItems.map((todoItem) => (
-            <TodoItem 
-              key={todoItem.id}
-              todoItem={todoItem}
-              getTodoItems={this.getTodoItems}
+      <>
+        {isLoading ? (
+          <Spinner />
+        ) : (
+          <div>
+            <TodoForm createTodoItem={this.createTodoItem} />
+            {error && <div className="error">{error}</div>}
+            <TodoItems 
+              toggleCompletedTodoItems={this.toggleCompletedTodoItems}
               hideCompletedTodoItems={hideCompletedTodoItems}
-            />
-          ))}
-        </TodoItems>
-      </div>
+            >
+              {filteredTodoItems.map((todoItem) => (
+                <TodoItem 
+                  key={todoItem.id}
+                  todoItem={todoItem}
+                  getTodoItems={this.getTodoItems}
+                  hideCompletedTodoItems={hideCompletedTodoItems}
+                />
+              ))}
+            </TodoItems>
+          </div>
+        )}
+      </>
     );
   }
 }
