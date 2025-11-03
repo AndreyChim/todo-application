@@ -102,6 +102,8 @@ class TodoApp extends React.Component {
                   todoItem={todoItem}
                   getTodoItems={this.getTodoItems}
                   hideCompletedTodoItems={hideCompletedTodoItems}
+                  handleErrors={this.handleErrors}
+                  clearErrors={this.clearErrors}
                 />
               ))}
             </TodoItems>
