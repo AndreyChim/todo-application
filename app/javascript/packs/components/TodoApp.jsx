@@ -19,6 +19,17 @@ class TodoApp extends React.Component {
     this.getTodoItems = this.getTodoItems.bind(this);
     this.createTodoItem = this.createTodoItem.bind(this);
     this.toggleCompletedTodoItems = this.toggleCompletedTodoItems.bind(this);
+    this.handleErrors = this.handleErrors.bind(this);
+    this.clearErrors = this.clearErrors.bind(this);
+  }
+
+  handleErrors(errorMessage) {
+    this.setState({ errorMessage });
+  }
+  clearErrors() {
+    this.setState({
+      errorMessage: null,
+    });
   }
 
   toggleCompletedTodoItems() {
@@ -75,7 +86,11 @@ class TodoApp extends React.Component {
           <Spinner />
         ) : (
           <div>
-            <TodoForm createTodoItem={this.createTodoItem} />
+            <TodoForm 
+            createTodoItem={this.createTodoItem} 
+            handleErrors={this.handleErrors}
+            clearErrors={this.clearErrors}
+            />
             {error && <div className="error">{error}</div>}
             <TodoItems 
               toggleCompletedTodoItems={this.toggleCompletedTodoItems}
